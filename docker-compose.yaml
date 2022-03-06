@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+    php:
+        image: rsnstkw/web
+        volumes:
+            - ./web:/var/www/html
+        networks:
+            - app-network
+        ports:
+            - 9000:9000
+    nginx:
+        image: rsnstkw/nginx
+        volumes:
+            - ./web/:/var/www/html/
+        ports:
+            - 8081:80
+        networks:
+            - app-network
+        depends_on:
+            - 'php'
+    db:
+        image: rsnstkw/db
+        networks:
+            - app-network
+        environment:
+            MYSQL_ROOT_PASSWORD: 12345
+        ports:
+            - 3306:3306
+        depends_on:
+            - 'nginx'
+            - 'php'
+networks:
+    app-network:
